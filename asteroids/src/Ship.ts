@@ -28,7 +28,7 @@ export class Ship{
         this.image = new Image();
         this.image.src = "/player_ship.svg"
     }
-    update(dt: number, input: {thrust: boolean; left: boolean; right: boolean;}){
+    update(dt: number, input: {thrust: boolean; brakes: boolean; left: boolean; right: boolean;}){
         console.log("input",input)
         const dr = 3;//rotaiton speed
          if(input.left){
@@ -37,9 +37,10 @@ export class Ship{
          if(input.right){
             this.angle += dr * dt;
          }
-         if(input.thrust){
-            const ax = Math.cos(this.angle) * this.velocity;
-            const ay = Math.sin(this.angle) * this.velocity;
+         if(input.thrust || input.brakes){
+            const adj_vel: number = input.thrust ? this.velocity : -this.velocity;
+            const ax = Math.cos(this.angle) * adj_vel;
+            const ay = Math.sin(this.angle) * adj_vel;
 
             this.dx += ax*dt;
             this.dy += ay*dt;
@@ -52,10 +53,10 @@ export class Ship{
 
          //clamp speed
          const speed = Math.hypot(this.dx, this.dy);
-         if(speed> this.maxSpeed){
+         if(speed > this.maxSpeed){
             const scale = this.maxSpeed / speed;
-            this.dx += scale;
-            this.dy += scale;
+            this.dx *= scale;
+            this.dy *= scale;
          }
          //eliminate low speed drift
          if(speed < 1){
@@ -65,6 +66,13 @@ export class Ship{
          //update
          this.x += this.dx * dt;
          this.y += this.dy * dt;
+
+         //outofbounds rollover
+         if(this.x > 800) this.x = 0;
+         if(this.x < 0) this.x = 800;
+         if(this.y < 0) this.y = 600;
+         if(this.y > 600) this.y = 0;
+
          console.log("x: ", this.x, "y: ", this.y)
          console.log("dx: ", this.dx, "dy: ", this.dy, "speed: ", speed)
     }
