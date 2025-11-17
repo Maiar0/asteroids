@@ -1,0 +1,174 @@
+<svg
+  width="1920"
+  height="1080"
+  viewBox="0 0 1920 1080"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <radialGradient id="bg-space" cx="50%" cy="45%" r="85%">
+      <stop offset="0%" stop-color="#060914"/>
+      <stop offset="45%" stop-color="#030511"/>
+      <stop offset="100%" stop-color="#000"/>
+    </radialGradient>
+
+    <filter id="star-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="0.6"/>
+    </filter>
+
+    <!-- Galaxy color styles -->
+    <radialGradient id="galaxy-blue" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8ab6ff" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#3d5cff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+
+    <radialGradient id="galaxy-mag" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffb3ff" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#ff4fd6" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+
+    <radialGradient id="galaxy-gold" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff2b8" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#ffcd55" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+
+    <style>
+      @keyframes tw1 { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+      @keyframes tw2 { 0%,100%{opacity:0.3;} 50%{opacity:0.9;} }
+      .tw-slow{animation:tw1 5s infinite ease-in-out;}
+      .tw-fast{animation:tw2 2.5s infinite ease-in-out;}
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg-space)"/>
+
+  <!-- Smaller, more galaxies -->
+  <g opacity="0.42">
+    <!-- Original five -->
+    <ellipse cx="300" cy="200" rx="160" ry="70" fill="url(#galaxy-blue)" transform="rotate(-15 300 200)"/>
+    <ellipse cx="1650" cy="220" rx="140" ry="60" fill="url(#galaxy-mag)" transform="rotate(20 1650 220)"/>
+    <ellipse cx="1000" cy="880" rx="150" ry="65" fill="url(#galaxy-gold)" transform="rotate(-10 1000 880)"/>
+    <ellipse cx="450" cy="800" rx="120" ry="55" fill="url(#galaxy-mag)" transform="rotate(10 450 800)"/>
+    <ellipse cx="1450" cy="750" rx="135" ry="60" fill="url(#galaxy-blue)" transform="rotate(-8 1450 750)"/>
+
+    <!-- A few more, smaller and lighter -->
+    <ellipse cx="960" cy="360" rx="110" ry="45" fill="url(#galaxy-blue)" transform="rotate(-5 960 360)"/>
+    <ellipse cx="220" cy="500" rx="95" ry="40" fill="url(#galaxy-gold)" transform="rotate(8 220 500)"/>
+    <ellipse cx="1720" cy="620" rx="100" ry="42" fill="url(#galaxy-mag)" transform="rotate(-12 1720 620)"/>
+  </g>
+
+  <!-- Many faint far stars (sample subset, still dense in view) -->
+  <g fill="#9aa4ff" opacity="0.45">
+    <circle cx="70" cy="60" r="0.6"/>
+    <circle cx="120" cy="100" r="0.7"/>
+    <circle cx="200" cy="40" r="0.6"/>
+    <circle cx="280" cy="80" r="0.6"/>
+    <circle cx="360" cy="65" r="0.7"/>
+    <circle cx="440" cy="110" r="0.6"/>
+    <circle cx="520" cy="55" r="0.6"/>
+    <circle cx="600" cy="95" r="0.7"/>
+    <circle cx="680" cy="50" r="0.6"/>
+    <circle cx="760" cy="90" r="0.7"/>
+    <circle cx="840" cy="60" r="0.6"/>
+    <circle cx="920" cy="100" r="0.7"/>
+    <circle cx="1000" cy="55" r="0.6"/>
+    <circle cx="1080" cy="95" r="0.7"/>
+    <circle cx="1160" cy="50" r="0.6"/>
+    <circle cx="1240" cy="90" r="0.7"/>
+    <circle cx="1320" cy="65" r="0.6"/>
+    <circle cx="1400" cy="110" r="0.7"/>
+    <circle cx="1480" cy="55" r="0.6"/>
+    <circle cx="1560" cy="95" r="0.7"/>
+    <circle cx="1640" cy="50" r="0.6"/>
+    <circle cx="1720" cy="90" r="0.7"/>
+    <circle cx="1800" cy="60" r="0.6"/>
+
+    <circle cx="90" cy="320" r="0.6"/>
+    <circle cx="170" cy="360" r="0.7"/>
+    <circle cx="250" cy="310" r="0.6"/>
+    <circle cx="330" cy="350" r="0.7"/>
+    <circle cx="410" cy="330" r="0.6"/>
+    <circle cx="490" cy="370" r="0.7"/>
+    <circle cx="570" cy="320" r="0.6"/>
+    <circle cx="650" cy="360" r="0.7"/>
+    <circle cx="730" cy="310" r="0.6"/>
+    <circle cx="810" cy="350" r="0.7"/>
+    <circle cx="890" cy="340" r="0.6"/>
+    <circle cx="970" cy="380" r="0.7"/>
+    <circle cx="1050" cy="320" r="0.6"/>
+    <circle cx="1130" cy="360" r="0.7"/>
+    <circle cx="1210" cy="310" r="0.6"/>
+    <circle cx="1290" cy="350" r="0.7"/>
+    <circle cx="1370" cy="330" r="0.6"/>
+    <circle cx="1450" cy="370" r="0.7"/>
+    <circle cx="1530" cy="320" r="0.6"/>
+    <circle cx="1610" cy="360" r="0.7"/>
+    <circle cx="1690" cy="310" r="0.6"/>
+    <circle cx="1770" cy="350" r="0.7"/>
+
+    <circle cx="110" cy="660" r="0.6"/>
+    <circle cx="190" cy="700" r="0.7"/>
+    <circle cx="270" cy="650" r="0.6"/>
+    <circle cx="350" cy="690" r="0.7"/>
+    <circle cx="430" cy="670" r="0.6"/>
+    <circle cx="510" cy="710" r="0.7"/>
+    <circle cx="590" cy="660" r="0.6"/>
+    <circle cx="670" cy="700" r="0.7"/>
+    <circle cx="750" cy="650" r="0.6"/>
+    <circle cx="830" cy="690" r="0.7"/>
+    <circle cx="910" cy="680" r="0.6"/>
+    <circle cx="990" cy="720" r="0.7"/>
+    <circle cx="1070" cy="660" r="0.6"/>
+    <circle cx="1150" cy="700" r="0.7"/>
+    <circle cx="1230" cy="650" r="0.6"/>
+    <circle cx="1310" cy="690" r="0.7"/>
+    <circle cx="1390" cy="670" r="0.6"/>
+    <circle cx="1470" cy="710" r="0.7"/>
+    <circle cx="1550" cy="660" r="0.6"/>
+    <circle cx="1630" cy="700" r="0.7"/>
+    <circle cx="1710" cy="650" r="0.6"/>
+    <circle cx="1790" cy="690" r="0.7"/>
+  </g>
+
+  <!-- Mid stars -->
+  <g fill="#dde5ff">
+    <circle cx="180" cy="200" r="1.1"/>
+    <circle cx="480" cy="150" r="1.2"/>
+    <circle cx="840" cy="210" r="1.1"/>
+    <circle cx="1180" cy="180" r="1.2"/>
+    <circle cx="1560" cy="230" r="1.2"/>
+
+    <circle cx="240" cy="450" r="1.1"/>
+    <circle cx="620" cy="410" r="1.2"/>
+    <circle cx="980" cy="460" r="1.2"/>
+    <circle cx="1380" cy="430" r="1.2"/>
+    <circle cx="1760" cy="480" r="1.2"/>
+
+    <circle cx="200" cy="780" r="1.1"/>
+    <circle cx="580" cy="740" r="1.2"/>
+    <circle cx="940" cy="800" r="1.1"/>
+    <circle cx="1320" cy="760" r="1.2"/>
+    <circle cx="1740" cy="810" r="1.2"/>
+  </g>
+
+  <!-- Foreground bright stars -->
+  <g fill="#fff" filter="url(#star-glow)">
+    <circle class="tw-slow" cx="350" cy="150" r="2.0"/>
+    <circle class="tw-fast" cx="750" cy="250" r="2.2"/>
+    <circle class="tw-slow" cx="1200" cy="180" r="2.1"/>
+    <circle class="tw-fast" cx="1650" cy="260" r="2.3"/>
+
+    <circle class="tw-fast" cx="280" cy="580" r="2.3"/>
+    <circle class="tw-slow" cx="700" cy="520" r="2.1"/>
+    <circle class="tw-fast" cx="1120" cy="600" r="2.3"/>
+    <circle class="tw-slow" cx="1520" cy="550" r="2.1"/>
+
+    <circle class="tw-slow" cx="350" cy="900" r="2.1"/>
+    <circle class="tw-fast" cx="780" cy="860" r="2.4"/>
+    <circle class="tw-slow" cx="1250" cy="930" r="2.2"/>
+    <circle class="tw-fast" cx="1700" cy="890" r="2.4"/>
+  </g>
+</svg>

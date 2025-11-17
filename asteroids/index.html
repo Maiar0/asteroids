@@ -4,12 +4,72 @@
     <meta charset="UTF-8">
     <title>Asteroids</title>
     <style>
-        body { margin: 0; background: black; }
-        canvas { display: block; margin: 0 auto; }
+        html, body{
+          margin: 0;
+          padding: 0;
+          height: 100%;
+          background-image: url(/starfield.svg);
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        body{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        #game-container{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        #control-bar{
+          width: 800px;
+          box-sizing: border-box;
+          height: 40px;
+          background: 1px solid #333;
+          border-bottom: none;
+          display: flex;
+          align-items: center;
+          gap:8px;
+          padding: 8px 8px;
+          font-family: sans-serif;
+          font-size: 14px;
+        }
+        #control-bar img{
+          height: 40px;
+        }
+        #control-bar button{
+          background: #333;
+          color: #eee;
+          border: 1px solid #555;
+          padding: 4px 8px;
+          cursor: pointer;
+        }
+        #control-bar button:hover{
+          background: #444;
+        }
+        canvas{
+          width: 800px;
+          height: 600px;
+          display: block;
+          border: 1px solid #333;
+        }
     </style>
 </head>
 <body>
-<canvas id="game" width="800" height="600"></canvas>
+<div id="game-container">
+    <div id="control-bar">
+        <img src="/asteroids_text.svg" alt="Asteroids Title">
+        <button id="btn-start">Start</button>
+        <button id="btn-reset">Reset</button>
+    </div>
+
+    <canvas id="game" width="800" height="600"></canvas>
+</div>
 <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

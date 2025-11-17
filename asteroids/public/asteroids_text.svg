@@ -1,0 +1,68 @@
+<svg
+  width="600"
+  height="200"
+  viewBox="0 0 600 200"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <!-- Main text fill gradient -->
+    <linearGradient id="asteroidsFill" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#39fffc" />
+      <stop offset="40%" stop-color="#7b5cff" />
+      <stop offset="70%" stop-color="#ff4d9b" />
+      <stop offset="100%" stop-color="#ffe66d" />
+    </linearGradient>
+
+    <!-- Stroke gradient for the outline -->
+    <linearGradient id="asteroidsStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0ff" />
+      <stop offset="50%" stop-color="#8a2be2" />
+      <stop offset="100%" stop-color="#ff1493" />
+    </linearGradient>
+
+    <!-- Inner highlight -->
+    <linearGradient id="innerHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.85)" />
+      <stop offset="40%" stop-color="rgba(255,255,255,0.1)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+    </linearGradient>
+
+    <!-- Clip to text -->
+    <clipPath id="textClip">
+      <text
+        x="50%"
+        y="52%"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        font-size="72"
+        font-family="Orbitron, 'Agency FB', 'Eurostile', system-ui, sans-serif"
+        font-weight="900"
+        letter-spacing="0.35em"
+      >
+        ASTEROIDS
+      </text>
+    </clipPath>
+  </defs>
+
+  <!-- Main Text (no glow filter) -->
+  <text
+    x="50%"
+    y="52%"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-size="72"
+    font-family="Orbitron, 'Agency FB', 'Eurostile', system-ui, sans-serif"
+    font-weight="900"
+    letter-spacing="0.35em"
+    fill="url(#asteroidsFill)"
+    stroke="url(#asteroidsStroke)"
+    stroke-width="2.5"
+  >
+    ASTEROIDS
+  </text>
+
+  <!-- Inner highlight -->
+  <g clip-path="url(#textClip)" opacity="0.7">
+    <rect x="0" y="10" width="600" height="80" fill="url(#innerHighlight)" />
+  </g>
+</svg>
