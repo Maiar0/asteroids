@@ -1,5 +1,5 @@
 import { Ship } from "./Ship"
-import {Asteroid} from "./Asteroid"
+import { Asteroid } from "./Asteroid"
 import { Bullet } from "./Bullet";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
@@ -19,6 +19,7 @@ const height = canvas.height;
 const ship = new Ship(width / 2, height / 2);
 const asteroids: Asteroid[] = [];
 const bullets: Bullet[] = [];
+let shootCD: number = 0;
 
 
 const input = {
@@ -34,7 +35,6 @@ window.addEventListener("keydown", (e) => {
   if (e.code === "KeyS") input.brakes = true;
   if (e.code === "KeyA") input.left = true;
   if (e.code === "KeyD") input.right = true;
-  if (e.code === "Space") input.shoot = true;
 })
 
 window.addEventListener("keyup", (e) => {
@@ -46,8 +46,9 @@ window.addEventListener("keyup", (e) => {
 })
 
 function update(dt: number) {
+  shootCD -= dt;
   ship.update(dt, input);
-  if(asteroids.length < 10){
+  if (asteroids.length < 10) {
     const ca = new Asteroid();
     asteroids.push(ca)
     console.log("New Asteroid: ", "X: ", ca.x, "Y: ", ca.y, ca.angle);
@@ -55,29 +56,54 @@ function update(dt: number) {
   asteroids.forEach(e => {
     e.update(dt, framCounter);
   });
-  bullets.forEach(e =>{
+  bullets.forEach(e => {
     e.update(dt);
   })
+  //collision
+  asteroids.forEach(a => {
+    bullets.forEach(b => {
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const dist = dx * dx + dy * dy;
+      if (dist < a.radius * a.radius) {
+        b.collided();
+        a.collided(framCounter);
+      }
+    })
+    //collision with player
+  })
+  for (let i = asteroids.length - 1; i >= 0; i--) {
+    if (!asteroids[i].alive) {//make them blow up
+      asteroids.splice(i, 1);
+    }
+  }
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    if (!bullets[i].alive) {//disapear
+      bullets.splice(i, 1);
+    }
+  }
 }
 
 function draw() {
   //background
   ctx.clearRect(0, 0, width, height);
   ship.draw(ctx)
-  if(asteroids.length > 0){
-    asteroids.forEach(e =>{
+  if (asteroids.length > 0) {
+    asteroids.forEach(e => {
       e.draw(ctx);
     })
   }
-  if(bullets.length > 0){
-    bullets.forEach(e =>{
+  if (bullets.length > 0) {
+    bullets.forEach(e => {
       e.draw(ctx);
     })
   }
 }
 
-function shoot(){
+function shoot() {
+  if (shootCD > 0) return;
   bullets.push(new Bullet(ship.x, ship.y, ship.angle))
+  shootCD = 0.25;
 }
 
 let lastTime = 0;

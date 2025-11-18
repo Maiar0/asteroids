@@ -4,14 +4,14 @@ export class Bullet {
     angle: number; //radians
     dx: number;
     dy: number;
-    active: boolean;
+    alive: boolean;
 
     readonly radius: number;
     readonly ROTATION_OFFSET: number;
     private image: HTMLImageElement;
 
     constructor(startX: number, startY: number, angle:number) {
-        this.active = true;
+        this.alive = true;
         this.ROTATION_OFFSET = Math.PI / 2
         this.x = startX;
         this.y = startY;
@@ -30,10 +30,10 @@ export class Bullet {
       this.y += this.dy * dt;
 
       //outofbounds rollover
-      if (this.x > 800) this.active = false;
-      if (this.x < 0) this.active = false;
-      if (this.y < 0) this.active = false;
-      if (this.y > 600) this.active = false;
+      if (this.x > 800) this.alive = false;
+      if (this.x < 0) this.alive = false;
+      if (this.y < 0) this.alive = false;
+      if (this.y > 600) this.alive = false;
 
    }
     draw(ctx: CanvasRenderingContext2D) {
@@ -41,9 +41,12 @@ export class Bullet {
         ctx.strokeStyle = "#ffffff";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x - this.dx * 0.1, this.y - this.dy * 0.1);
+        ctx.moveTo(this.x+1, this.y+1);
+        ctx.lineTo(this.x + this.dx * 0.05, this.y + this.dy * 0.05);
         ctx.stroke();
         ctx.restore();
+    }
+    collided(){
+        this.alive = false;
     }
 }
