@@ -1,0 +1,39 @@
+<svg
+  width="80"
+  height="80"
+  viewBox="0 0 80 80"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Large jagged rock -->
+  <g
+    fill="#404040"
+    fill-opacity="0.3"
+    stroke="#bbbbbb"
+    stroke-width="2.5"
+    stroke-linejoin="round"
+  >
+    <!-- Outer shape, roughly centered at (40,40) -->
+    <polygon
+      points="
+        40 6
+        56 10
+        70 20
+        74 34
+        68 50
+        58 64
+        44 72
+        28 70
+        16 62
+        8 46
+        10 30
+        20 16
+      "
+    />
+
+    <!-- Surface cracks -->
+    <polyline points="30 22 36 30 32 38" stroke-width="1.5" />
+    <polyline points="52 22 50 30 58 36" stroke-width="1.5" />
+    <polyline points="26 48 34 50 32 58" stroke-width="1.5" />
+    <polyline points="48 50 54 56 50 64" stroke-width="1.5" />
+  </g>
+</svg>
