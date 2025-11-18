@@ -51,7 +51,7 @@ export class Asteroid {
    }
    update(dt: number, framCounter: number) {
       this.lifeCycle = framCounter;
-      if (this.lifeCycle > 60) {
+      if (this.lifeCycle > 60 && this.active === false) {
          this.active = true;
          this.dx = Math.cos(this.angle) * this.velocity;
          this.dy = Math.sin(this.angle) * this.velocity;
@@ -59,6 +59,12 @@ export class Asteroid {
       //update
       this.x += this.dx * dt;
       this.y += this.dy * dt;
+
+      //bounds check
+      if (this.x > 832) this.x = -32;
+      if (this.x < -32) this.x = 832;
+      if (this.y < -32) this.y = 632;
+      if (this.y > 632) this.y = -32;
    }
    initPos(): { x: number; y: number } {
       let spawnAreas = [
