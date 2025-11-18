@@ -1,6 +1,7 @@
 import { Ship } from "./Ship"
 import { Asteroid } from "./Asteroid"
 import { Bullet } from "./Bullet";
+import { Explosion } from "./Explosion";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -19,6 +20,7 @@ const height = canvas.height;
 const ship = new Ship(width / 2, height / 2);
 const asteroids: Asteroid[] = [];
 const bullets: Bullet[] = [];
+const explosions: Explosion[] = [];
 let shootCD: number = 0;
 
 
@@ -46,6 +48,7 @@ window.addEventListener("keyup", (e) => {
 })
 
 function update(dt: number) {
+  //update frame
   shootCD -= dt;
   ship.update(dt, input);
   if (asteroids.length < 10) {
@@ -58,6 +61,9 @@ function update(dt: number) {
   });
   bullets.forEach(e => {
     e.update(dt);
+  })
+  explosions.forEach(e=>{
+    e.update(framCounter);
   })
   //collision
   asteroids.forEach(a => {
@@ -72,14 +78,22 @@ function update(dt: number) {
     })
     //collision with player
   })
+  //remove asteroids
   for (let i = asteroids.length - 1; i >= 0; i--) {
     if (!asteroids[i].alive) {//make them blow up
+      explosions.push(new Explosion(asteroids[i].x,asteroids[i].y,framCounter ))
       asteroids.splice(i, 1);
     }
   }
+  //remove bullets
   for (let i = bullets.length - 1; i >= 0; i--) {
     if (!bullets[i].alive) {//disapear
       bullets.splice(i, 1);
+    }
+  }
+  for (let i = explosions.length - 1; i >= 0; i--) {
+    if (!explosions[i].alive) {//disapear
+      explosions.splice(i, 1);
     }
   }
 }
@@ -95,6 +109,11 @@ function draw() {
   }
   if (bullets.length > 0) {
     bullets.forEach(e => {
+      e.draw(ctx);
+    })
+  }
+  if(explosions.length > 0){
+    explosions.forEach(e =>{
       e.draw(ctx);
     })
   }
