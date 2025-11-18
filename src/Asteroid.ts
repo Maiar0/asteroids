@@ -2,6 +2,7 @@ export class Asteroid {
    x: number;
    y: number;
    angle: number; //radians
+   velocity: number;
    dx: number;
    dy: number;
    size: number;
@@ -10,7 +11,6 @@ export class Asteroid {
    lifeCycle: number;
 
    readonly radius: number;
-   readonly velocity: number;
    readonly ROTATION_OFFSET: number;
 
    private image_small: HTMLImageElement;
@@ -19,11 +19,14 @@ export class Asteroid {
 
    constructor() {
       this.ROTATION_OFFSET = 0;
-      this.x = this.initX();
-      this.y = this.initY();
-      const x2 = this.initX();
-      const y2 = this.initY();
+      const pos = this.initPos();
+      this.x = pos.x;
+      this.y = pos.y;
+      const y2 =Math.random()*(600);
+      const x2 = Math.random()*(800);
+      console.log("interior random point: ", x2, y2);
       this.angle = Math.atan2(y2 - this.y, x2 - this.x)
+      this.velocity = 100;
       this.dx = 0;
       this.dy = 0;
       this.size = this.initSize();
@@ -31,7 +34,6 @@ export class Asteroid {
       this.lifeCycle = 0;
 
       this.radius = 24;
-      this.velocity = 200;
 
       this.image_small = new Image();
       this.image_small.src = "/asteroids/asteroid_small.svg"
@@ -47,37 +49,26 @@ export class Asteroid {
       };
 
    }
-   update(dt: number, framCounter: number){
+   update(dt: number, framCounter: number) {
       this.lifeCycle = framCounter;
-      if (this.lifeCycle > 60){
+      if (this.lifeCycle > 60) {
          this.active = true;
-         this.dx = 100;
-         this.dy = 100;
+         this.dx = Math.cos(this.angle) * this.velocity;
+         this.dy = Math.sin(this.angle) * this.velocity;
       }
       //update
-      this.x += this.dx*dt;
-      this.y += this.dy*dt;
+      this.x += this.dx * dt;
+      this.y += this.dy * dt;
    }
-   initX(): number {
-      const options = {
-         1: -32 - (Math.random() * (100 - 32)),
-         2: 832 + (Math.random() * (900 - 832))
-      }
-      const choice = options[Math.random() > .5 ? 1 : 2];
-      console.log(choice);
-      return choice;
-   }
-   initPos(): Object{
-      
-      return {x: 1, y: 0};
-   }
-   initY():number {
-      const options = {
-         1: -32 - (Math.random() * (100 - 32)),
-         2: 632 + (Math.random() * (700 - 632))
-      }
-      const choice = options[Math.random() > .5 ? 1 : 2];
-      console.log(choice);
+   initPos(): { x: number; y: number } {
+      let spawnAreas = [
+         { x: (-100 + Math.random() * (800 + 100)), y: (-32 - Math.random() * (100 - 32)) },
+         { x: (-100 + Math.random() * (800 + 100)), y: (632 + Math.random() * (700 - 632)) },
+         { x: (-32 - Math.random() * (100 - 32)), y: (-100 + Math.random() * (600 + 100)) },
+         { x: (832 + Math.random() * (900 - 832)), y: (-100 + Math.random() * (600 + 100)) }
+      ]
+      const choice = spawnAreas[Math.floor(Math.random()*4)];
+      console.log("initPos:", choice);
       return choice;
    }
    initSize(): number {
@@ -113,8 +104,6 @@ export class Asteroid {
 
       ctx.save();
       ctx.translate(this.x, this.y);   // move origin to ship position
-
-      ctx.rotate(this.angle + this.ROTATION_OFFSET);          // rotate around that origin
 
       // Draw image centered on (0,0) in this local space
       ctx.drawImage(img, -w / 2, -h / 2);

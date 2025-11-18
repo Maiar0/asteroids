@@ -45,10 +45,10 @@ window.addEventListener("keyup", (e) => {
 
 function update(dt: number) {
   ship.update(dt, input);
-  if(asteroids.length < 1){
+  if(asteroids.length < 10){
     const ca = new Asteroid();
     asteroids.push(ca)
-    console.log("New Asteroid: ", "X: ", ca.x, "Y: ", ca.y);
+    console.log("New Asteroid: ", "X: ", ca.x, "Y: ", ca.y, ca.angle);
   }
   asteroids.forEach(e => {
     e.update(dt, framCounter);
