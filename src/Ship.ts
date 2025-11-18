@@ -109,4 +109,8 @@ export class Ship {
 
       ctx.restore();
    }
+   collided(){
+      //subtract one life
+      console.log("Ship collided")
+   }
 }

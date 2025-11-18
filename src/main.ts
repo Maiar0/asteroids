@@ -76,7 +76,13 @@ function update(dt: number) {
         a.collided(framCounter);
       }
     })
-    //collision with player
+    const dx = ship.x -a.x;
+    const dy = ship.y - a.y;
+    const dist = dx*dx + dy*dy;
+    if(dist < a.radius * a.radius){
+      a.collided(framCounter);
+      ship.collided();
+    }
   })
   //remove asteroids
   for (let i = asteroids.length - 1; i >= 0; i--) {
