@@ -1,5 +1,6 @@
 import { Ship } from "./Ship"
 import {Asteroid} from "./Asteroid"
+import { Bullet } from "./Bullet";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -17,6 +18,7 @@ const height = canvas.height;
 
 const ship = new Ship(width / 2, height / 2);
 const asteroids: Asteroid[] = [];
+const bullets: Bullet[] = [];
 
 
 const input = {
@@ -40,7 +42,7 @@ window.addEventListener("keyup", (e) => {
   if (e.code === "KeyS") input.brakes = false;
   if (e.code === "KeyA") input.left = false;
   if (e.code === "KeyD") input.right = false;
-  if (e.code === "Space") input.shoot = false;
+  if (e.code === "Space") shoot();
 })
 
 function update(dt: number) {
@@ -53,6 +55,9 @@ function update(dt: number) {
   asteroids.forEach(e => {
     e.update(dt, framCounter);
   });
+  bullets.forEach(e =>{
+    e.update(dt);
+  })
 }
 
 function draw() {
@@ -64,6 +69,15 @@ function draw() {
       e.draw(ctx);
     })
   }
+  if(bullets.length > 0){
+    bullets.forEach(e =>{
+      e.draw(ctx);
+    })
+  }
+}
+
+function shoot(){
+  bullets.push(new Bullet(ship.x, ship.y, ship.angle))
 }
 
 let lastTime = 0;
