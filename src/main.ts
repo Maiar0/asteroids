@@ -45,11 +45,13 @@ window.addEventListener("keyup", (e) => {
 
 function update(dt: number) {
   ship.update(dt, input);
-  if(asteroids.length < 10){
-    asteroids.push(new Asteroid())
+  if(asteroids.length < 1){
+    const ca = new Asteroid();
+    asteroids.push(ca)
+    console.log("New Asteroid: ", "X: ", ca.x, "Y: ", ca.y);
   }
   asteroids.forEach(e => {
-    e.update(dt);
+    e.update(dt, framCounter);
   });
 }
 
@@ -65,9 +67,11 @@ function draw() {
 }
 
 let lastTime = 0;
+let framCounter = 0;
 function loop(timestamp: number) {
   const dt = (timestamp - lastTime) / 1000; // seconds
   lastTime = timestamp;
+  framCounter += 1;
   update(dt);
   draw();
   requestAnimationFrame(loop);
