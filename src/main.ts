@@ -17,7 +17,7 @@ canvas.height = GAME_HEIGHT;
 const width = canvas.width;
 const height = canvas.height;
 
-const ship = new Ship(width / 2, height / 2);
+let ship = new Ship(width / 2, height / 2);
 const asteroids: Asteroid[] = [];
 const bullets: Bullet[] = [];
 const explosions: Explosion[] = [];
@@ -50,6 +50,7 @@ window.addEventListener("keyup", (e) => {
 function update(dt: number) {
   //update frame
   shootCD -= dt;
+  lifeOfShip += dt;
   ship.update(dt, input);
   if (asteroids.length < 10) {
     const ca = new Asteroid();
@@ -80,8 +81,8 @@ function update(dt: number) {
     const dy = ship.y - a.y;
     const dist = dx*dx + dy*dy;
     if(dist < a.radius * a.radius){
+      playerCollision();
       a.collided(framCounter);
-      ship.collided();
     }
   })
   //remove asteroids
@@ -130,7 +131,24 @@ function shoot() {
   bullets.push(new Bullet(ship.x, ship.y, ship.angle))
   shootCD = 0.25;
 }
+let lives = 3;
+let lifeOfShip = 0;
+function playerCollision(){
+  console.log("PLayerCollision: ", lifeOfShip, lives)
+  if(lifeOfShip < 2 ) return;
+  lives -= 1;
+  if(lives <= 0){
+    gameOver();
+    return;
+  }
+  ship = new Ship(width / 2, height / 2);
+  lifeOfShip = 0;
+}
 
+
+function gameOver(){
+
+}
 let lastTime = 0;
 let framCounter = 0;
 function loop(timestamp: number) {

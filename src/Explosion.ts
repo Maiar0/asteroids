@@ -14,10 +14,10 @@ export class Explosion {
 
         this.image = new Image();
         this.image.src = "/explosion.svg"
-        console.log("New Explosion:", this.x, this.y)
+        //console.log("New Explosion:", this.x, this.y)
     }
     update(frame: number) {
-        console.log("explosion Update: ", this.created- frame)
+        //console.log("explosion Update: ", this.created- frame)
         if (frame - this.created > 10) {
             this.alive = false;
         }
