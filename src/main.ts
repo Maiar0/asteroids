@@ -2,6 +2,7 @@ import { Ship } from "./Ship"
 import { Asteroid } from "./Asteroid"
 import { Bullet } from "./Bullet";
 import { Explosion } from "./Explosion";
+import  {drawPauseMenu}  from "./Menus"
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -17,37 +18,15 @@ canvas.height = GAME_HEIGHT;
 const width = canvas.width;
 const height = canvas.height;
 
-let ship = new Ship(width / 2, height / 2);
+let ship: Ship = new Ship(width / 2, height / 2);
 const asteroids: Asteroid[] = [];
 const bullets: Bullet[] = [];
 const explosions: Explosion[] = [];
 let shootCD: number = 0;
-
-
-const input = {
-  thrust: false,
-  brakes: false,
-  left: false,
-  right: false,
-  shoot: false
-}
-
-window.addEventListener("keydown", (e) => {
-  if (e.code === "KeyW") input.thrust = true;
-  if (e.code === "KeyS") input.brakes = true;
-  if (e.code === "KeyA") input.left = true;
-  if (e.code === "KeyD") input.right = true;
-})
-
-window.addEventListener("keyup", (e) => {
-  if (e.code === "KeyW") input.thrust = false;
-  if (e.code === "KeyS") input.brakes = false;
-  if (e.code === "KeyA") input.left = false;
-  if (e.code === "KeyD") input.right = false;
-  if (e.code === "Space") shoot();
-})
+let isPaused: boolean = false;
 
 function update(dt: number) {
+  if (isPaused) return;
   //update frame
   shootCD -= dt;
   lifeOfShip += dt;
@@ -63,7 +42,7 @@ function update(dt: number) {
   bullets.forEach(e => {
     e.update(dt);
   })
-  explosions.forEach(e=>{
+  explosions.forEach(e => {
     e.update(framCounter);
   })
   //collision
@@ -77,10 +56,10 @@ function update(dt: number) {
         a.collided(framCounter);
       }
     })
-    const dx = ship.x -a.x;
+    const dx = ship.x - a.x;
     const dy = ship.y - a.y;
-    const dist = dx*dx + dy*dy;
-    if(dist < a.radius * a.radius){
+    const dist = dx * dx + dy * dy;
+    if (dist < a.radius * a.radius) {
       playerCollision();
       a.collided(framCounter);
     }
@@ -88,7 +67,7 @@ function update(dt: number) {
   //remove asteroids
   for (let i = asteroids.length - 1; i >= 0; i--) {
     if (!asteroids[i].alive) {//make them blow up
-      explosions.push(new Explosion(asteroids[i].x,asteroids[i].y,framCounter ))
+      explosions.push(new Explosion(asteroids[i].x, asteroids[i].y, framCounter))
       asteroids.splice(i, 1);
     }
   }
@@ -106,6 +85,10 @@ function update(dt: number) {
 }
 
 function draw() {
+  if(isPaused){
+    drawPauseMenu(ctx, width, height)
+    return;
+  }
   //background
   ctx.clearRect(0, 0, width, height);
   ship.draw(ctx)
@@ -119,25 +102,20 @@ function draw() {
       e.draw(ctx);
     })
   }
-  if(explosions.length > 0){
-    explosions.forEach(e =>{
+  if (explosions.length > 0) {
+    explosions.forEach(e => {
       e.draw(ctx);
     })
   }
 }
 
-function shoot() {
-  if (shootCD > 0) return;
-  bullets.push(new Bullet(ship.x, ship.y, ship.angle))
-  shootCD = 0.25;
-}
 let lives = 3;
 let lifeOfShip = 0;
-function playerCollision(){
+function playerCollision() {
   console.log("PLayerCollision: ", lifeOfShip, lives)
-  if(lifeOfShip < 2 ) return;
+  if (lifeOfShip < 2) return;
   lives -= 1;
-  if(lives <= 0){
+  if (lives <= 0) {
     gameOver();
     return;
   }
@@ -146,9 +124,62 @@ function playerCollision(){
 }
 
 
-function gameOver(){
-
+function gameOver() {
+  disableInput();
+  ship = new Ship(-1100, -1100)
 }
+
+const input = {
+  thrust: false,
+  brakes: false,
+  left: false,
+  right: false,
+  shoot: false,
+  escape: false
+}
+
+function onKeyDown(e: KeyboardEvent): void {
+    switch (e.code) {
+        case "KeyW": input.thrust = true; break;
+        case "KeyS": input.brakes = true; break;
+        case "KeyA": input.left = true; break;
+        case "KeyD": input.right = true; break;
+        case "Escape": escapePress(); break;
+        default: break;
+    }
+}
+
+function onKeyUp(e: KeyboardEvent): void {
+    switch (e.code) {
+        case "KeyW": input.thrust = false; break;
+        case "KeyS": input.brakes = false; break;
+        case "KeyA": input.left = false; break;
+        case "KeyD": input.right = false; break;
+        case "Space": shoot(); break;
+        default: break;
+    }
+}
+
+export function enableInput(): void {
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+}
+
+export function disableInput(): void {
+    window.removeEventListener("keydown", onKeyDown);
+    window.removeEventListener("keyup", onKeyUp);
+}
+
+function escapePress(){
+  isPaused = !isPaused;
+}
+
+function shoot() {
+  if (shootCD > 0) return;
+  bullets.push(new Bullet(ship.x, ship.y, ship.angle))
+  shootCD = 0.25;
+}
+
 let lastTime = 0;
 let framCounter = 0;
 function loop(timestamp: number) {
@@ -159,5 +190,5 @@ function loop(timestamp: number) {
   draw();
   requestAnimationFrame(loop);
 }
-
+enableInput();
 requestAnimationFrame(loop);
