@@ -28,6 +28,7 @@ export class Ship {
       this.image = new Image();
       this.image.src = "/player_ship.svg"
    }
+
    update(dt: number, input: { thrust: boolean; brakes: boolean; left: boolean; right: boolean; }) {
       const dr = 3;//rotaiton speed
       if (input.left) {
@@ -109,7 +110,7 @@ export class Ship {
 
       ctx.restore();
    }
-   collided(){
+   collided() {
       console.log("Ship collided")
    }
 }
