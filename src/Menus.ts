@@ -49,7 +49,6 @@ export function drawLives(ctx: CanvasRenderingContext2D, lives: number) {
     for(let i = lives ; i > 0; --i){
         ctx.drawImage(img, (-w / 2)+offset, -h / 2);
         offset += 20;
-        console.log("Drawn Lives Ship")
     }
 
     ctx.restore();

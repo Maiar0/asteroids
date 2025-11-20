@@ -1,3 +1,4 @@
+import{ angleAdjustment } from "./Utils"
 export class Asteroid {
    x: number;
    y: number;
@@ -27,7 +28,7 @@ export class Asteroid {
       const y2 = Math.random() * (600);
       const x2 = Math.random() * (800);
       console.log("interior random point: ", x2, y2);
-      this.angle = Math.atan2(y2 - this.y, x2 - this.x)
+      this.angle = angleAdjustment(this.x, this.y, x2, y2);
       this.velocity = 100;
       this.dx = 0;
       this.dy = 0;

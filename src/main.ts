@@ -26,13 +26,30 @@ let shootCD: number = 0;
 let isPaused: boolean = false;
 let isGameOver: boolean = false;
 
+document.addEventListener("visibilitychange", () => {
+  if(document.hidden){
+    isPaused = true;
+  }
+})
+
+let mouseX = 0;
+let mouseY = 0;
+
+canvas.addEventListener("mousemove", (e: MouseEvent) => {
+    const rect = canvas.getBoundingClientRect();
+    
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+
+});
+
 function update(dt: number) {
   if (isPaused) return;
   if (isGameOver) return;
   //update frame
   shootCD -= dt;
   lifeOfShip += dt;
-  ship.update(dt, input);
+  ship.update(dt, input, mouseX, mouseY);
   if (asteroids.length < 10) {
     const ca = new Asteroid();
     asteroids.push(ca)
@@ -141,6 +158,7 @@ function gameOver() {
   });
   ship = new Ship(-1100, -1100)
 }
+
 function restartGame() {
   lastTime = 0;
   frameCounter = 0;
@@ -158,6 +176,7 @@ function restartGame() {
   enableInput();
 
 }
+
 const input = {
   thrust: false,
   brakes: false,
