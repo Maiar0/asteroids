@@ -3,7 +3,8 @@ import { Asteroid } from "./Asteroid"
 import { Bullet } from "./Bullet";
 import { Explosion } from "./Explosion";
 import { drawGameOverMenu, drawLives, drawPauseMenu, drawStatsBar } from "./Menus"
-import { getMaxAsteroids } from "./Utils";
+import { getMaxAsteroids, isColliding } from "./Utils";
+import type { GameState } from "./GameState";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -30,7 +31,7 @@ let points: number = 0;
 let level = 1;
 
 document.addEventListener("visibilitychange", () => {
-  if(document.hidden){
+  if (document.hidden) {
     isPaused = true;
   }
 })
@@ -39,10 +40,10 @@ let mouseX = 0;
 let mouseY = 0;
 
 canvas.addEventListener("mousemove", (e: MouseEvent) => {
-    const rect = canvas.getBoundingClientRect();
-    
-    mouseX = e.clientX - rect.left;
-    mouseY = e.clientY - rect.top;
+  const rect = canvas.getBoundingClientRect();
+
+  mouseX = e.clientX - rect.left;
+  mouseY = e.clientY - rect.top;
 
 });
 
@@ -71,19 +72,14 @@ function update(dt: number) {
   //collision
   asteroids.forEach(a => {
     bullets.forEach(b => {
-      const dx = b.x - a.x;
-      const dy = b.y - a.y;
-      const dist = dx * dx + dy * dy;
-      if (dist < a.radius * a.radius) {
+      //bullets
+      if (isColliding(a, b)) {
         b.collided();
         a.collided(frameCounter);
-        points += 1;
       }
     })
-    const dx = ship.x - a.x;
-    const dy = ship.y - a.y;
-    const dist = dx * dx + dy * dy;
-    if (dist < a.radius * a.radius) {
+    //player
+    if (isColliding(a, ship)) {
       playerCollision();
       a.collided(frameCounter);
     }
@@ -239,6 +235,56 @@ function shoot() {
   shootCD = 0.25;
 }
 
+function snapshotGameState(user: string): GameState {
+  return {
+    user,
+    points,
+    level,
+    elapsedTime,
+    ship: { x: ship.x, y: ship.y },
+    lives,
+    asteroids: asteroids.map(a => ({
+      x: a.x,
+      y: a.y,
+      angle: a.angle,
+      radius: a.radius
+    })),
+    isPaused,
+    isGameOver
+  };
+}
+
+function restoreGameState(state: GameState): void {
+  disableInput()
+  isPaused = true;
+  if(state.isGameOver){
+    isPaused=false;
+    gameOver()
+    
+  }
+  points = state.points;
+  level = state.level;
+  elapsedTime = state.elapsedTime;
+  lives = state.lives;
+  isGameOver = state.isGameOver;
+
+  ship = new Ship(state.ship.x, state.ship.y);
+
+  asteroids.length = 0;
+  for (const a of state.asteroids) {
+    const asteroid = new Asteroid();
+    asteroid.x = a.x;
+    asteroid.y = a.y;
+    asteroid.angle = a.angle;   // or ignore this if you want fresh directions
+    asteroid.radius = a.radius;
+    asteroids.push(asteroid);
+  }
+
+  bullets.length = 0;
+  explosions.length = 0;
+  enableInput();
+}
+
 let lastTime = 0;
 let frameCounter = 0;
 let elapsedTime = 0;
@@ -246,7 +292,7 @@ function loop(timestamp: number) {
   const dt = (timestamp - lastTime) / 1000; // seconds
   lastTime = timestamp;
   frameCounter += 1;
-  if(!isGameOver && !isPaused){
+  if (!isGameOver && !isPaused) {
     elapsedTime += dt;
   }
   update(dt);

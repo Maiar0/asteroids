@@ -1,3 +1,5 @@
+import { drawCircle } from "./Utils";
+
 export class Bullet {
     x: number;
     y: number;
@@ -19,7 +21,7 @@ export class Bullet {
         this.dx = Math.cos(this.angle) * 300;
         this.dy = Math.sin(this.angle) * 300;
 
-        this.radius = 24;
+        this.radius = 1;
 
         this.image = new Image();
         this.image.src = "/player_ship.svg"
@@ -45,6 +47,7 @@ export class Bullet {
         ctx.lineTo(this.x + this.dx * 0.05, this.y + this.dy * 0.05);
         ctx.stroke();
         ctx.restore();
+        //drawCircle(ctx,this.x,this.y,this.radius)//debug collision
     }
     collided(){
         this.alive = false;

@@ -1,4 +1,4 @@
-import { angleAdjustment } from "./Utils";
+import { angleAdjustment, drawCircle } from "./Utils";
 export class Ship {
    x: number;
    y: number;
@@ -21,8 +21,8 @@ export class Ship {
       this.dx = 0;
       this.dy = 0;
 
-      this.radius = 24;
-      this.velocity = 200;
+      this.radius = 10;
+      this.velocity = 150;
       this.friction = 0.8;
       this.maxSpeed = 400;
 
@@ -30,14 +30,7 @@ export class Ship {
       this.image.src = "/player_ship.svg"
    }
 
-   update(dt: number, input: { thrust: boolean; brakes: boolean; left: boolean; right: boolean; }, mouseX: number, mouseY: number) {
-      const dr = 3;//rotaiton speed
-      /*if (input.left) {
-         this.angle -= dr * dt;
-      }
-      if (input.right) {
-         this.angle += dr * dt;
-      }*/
+   update(dt: number, input: { thrust: boolean; brakes: boolean; }, mouseX: number, mouseY: number) {
       this.angle = angleAdjustment(this.x, this.y, mouseX, mouseY)
       if (input.thrust || input.brakes) {
          const adj_vel: number = input.thrust ? this.velocity : -this.velocity;
@@ -97,7 +90,7 @@ export class Ship {
          ctx.restore();
          return;
       }
-
+      //drawCircle(ctx,this.x,this.y,this.radius)//debug collision
       const img = this.image;
       const w = img.width;
       const h = img.height;

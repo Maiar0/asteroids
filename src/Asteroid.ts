@@ -1,4 +1,4 @@
-import{ angleAdjustment } from "./Utils"
+import { angleAdjustment, drawCircle } from "./Utils"
 export class Asteroid {
    x: number;
    y: number;
@@ -35,7 +35,7 @@ export class Asteroid {
       this.active = false;
       this.lifeCycle = 0;
 
-      this.radius = this.initRadius();
+      this.radius = this.initradius();
       this.lastCollision = 0;
 
       this.image_small = new Image();
@@ -70,25 +70,14 @@ export class Asteroid {
       if (this.y < -32) this.y = 632;
       if (this.y > 632) this.y = -32;
    }
-   
+
    draw(ctx: CanvasRenderingContext2D) {
       const image = this.Phase[this.radius];
       if (!image.complete || image.naturalWidth === 0) {
-         // Fallback: simple triangle if image not yet loaded
-         ctx.save();
-         ctx.translate(this.x, this.y);
-         ctx.rotate(this.angle);
-
-         ctx.beginPath();
-         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-         ctx.strokeStyle = "white";
-         ctx.lineWidth = 2;
-         ctx.stroke();
-
-         ctx.restore();
+         drawCircle(ctx, this.x,this.y,this.radius);
          return;
       }
-
+      //drawCircle(ctx,this.x,this.y,this.radius)//debug collision
       const img = image;
       const w = img.width;
       const h = img.height;
@@ -101,6 +90,7 @@ export class Asteroid {
 
       ctx.restore();
    }
+   
    initPos(): { x: number; y: number } {
       let spawnAreas = [
          { x: (-100 + Math.random() * (800 + 100)), y: (-32 - Math.random() * (100 - 32)) },
@@ -112,24 +102,24 @@ export class Asteroid {
       console.log("initPos:", choice);
       return choice;
    }
-   initRadius(): number {
+   initradius(): number {
       const rand: number = Math.random()
       if (rand > 0 && rand <= .33) return 14;
       if (rand > .33 && rand <= .66) return 22;
       if (rand > .66 && rand <= 1.0) return 37;
       return 22;
    }
-   
-   collided(frame: number){
+
+   collided(frame: number) {
       console.log(frame, this.lastCollision, this.radius)
-      if(frame - this.lastCollision < 10) return;
-      if(this.radius === 14){
+      if (frame - this.lastCollision < 10) return;
+      if (this.radius === 14) {
          this.alive = false;
       }
-      if(this.radius === 22){
+      if (this.radius === 22) {
          this.radius = 14;
       }
-      if(this.radius === 37){
+      if (this.radius === 37) {
          this.radius = 22;
       }
       console.log(this.radius)
