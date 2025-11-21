@@ -5,6 +5,7 @@ import { Explosion } from "./Explosion";
 import { drawGameOverMenu, drawLives, drawPauseMenu, drawStatsBar } from "./Menus"
 import { getMaxAsteroids, isColliding } from "./Utils";
 import type { GameState } from "./GameState";
+import { input, enableInput, disableInput } from "./Input";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -31,7 +32,7 @@ let points: number = 0;
 let level = 1;
 
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
+  if (document.hidden && !isGameOver) {
     isPaused = true;
   }
 })
@@ -48,6 +49,7 @@ canvas.addEventListener("mousemove", (e: MouseEvent) => {
 });
 
 function update(dt: number) {
+  handleInput();
   if (isPaused) return;
   if (isGameOver) return;
   //update frame
@@ -134,7 +136,7 @@ function draw() {
     })
   }
   drawLives(ctx, lives);
-  drawStatsBar(ctx, width, points, level);
+  drawStatsBar(ctx, width, points, level, elapsedTime);
 }
 
 let lives = 3;
@@ -153,19 +155,15 @@ function playerCollision() {
 
 
 function gameOver() {
-  isGameOver = true;
   disableInput();
-  window.addEventListener("keydown", (e: KeyboardEvent) => {
-    if (e.code === "KeyR") {
-      restartGame();
-    }
-  });
   ship = new Ship(-1100, -1100)
+  isGameOver = true;
+  window.addEventListener("keydown", handleRestartKey);
 }
 
 function restartGame() {
-  lastTime = 0;
   frameCounter = 0;
+  elapsedTime = 0;
   asteroids.length = 0;
   bullets.length = 0;
   explosions.length = 0;
@@ -175,66 +173,35 @@ function restartGame() {
   ship = new Ship(width / 2, height / 2);
   isPaused = false;
   isGameOver = false;
-  window.removeEventListener("keydown", (e: KeyboardEvent) => {
-    if (e.code === "KeyR") {
-      restartGame();
-    }
-  });
+  window.removeEventListener("keydown", handleRestartKey);
   enableInput();
 
 }
 
-const input = {
-  thrust: false,
-  brakes: false,
-  left: false,
-  right: false,
-  shoot: false,
-  escape: false
-}
 
-function onKeyDown(e: KeyboardEvent): void {
-  switch (e.code) {
-    case "KeyW": input.thrust = true; break;
-    case "KeyS": input.brakes = true; break;
-    case "KeyA": input.left = true; break;
-    case "KeyD": input.right = true; break;
-    case "Escape": escapePress(); break;
-    default: break;
+function handleRestartKey(e: KeyboardEvent) {
+  if (e.code === "KeyR") {
+    restartGame();
   }
 }
 
-function onKeyUp(e: KeyboardEvent): void {
-  switch (e.code) {
-    case "KeyW": input.thrust = false; break;
-    case "KeyS": input.brakes = false; break;
-    case "KeyA": input.left = false; break;
-    case "KeyD": input.right = false; break;
-    case "Space": shoot(); break;
-    default: break;
+function handleInput() {
+  if (input.escape) {
+    input.escape = false;
+    isPaused = !isPaused;
+    if (isPaused) {
+      window.addEventListener("keydown", handleRestartKey);
+    } else {
+      window.removeEventListener("keydown", handleRestartKey);
+    }
+  }
+  if (input.shoot) {
+    input.shoot = false;
+    if (shootCD > 0) return;
+    bullets.push(new Bullet(ship.x, ship.y, ship.angle))
+    shootCD = 0.25;
   }
 }
-
-export function enableInput(): void {
-  window.addEventListener("keydown", onKeyDown);
-  window.addEventListener("keyup", onKeyUp);
-}
-
-export function disableInput(): void {
-  window.removeEventListener("keydown", onKeyDown);
-  window.removeEventListener("keyup", onKeyUp);
-}
-
-function escapePress() {
-  isPaused = !isPaused;
-}
-
-function shoot() {
-  if (shootCD > 0) return;
-  bullets.push(new Bullet(ship.x, ship.y, ship.angle))
-  shootCD = 0.25;
-}
-
 function snapshotGameState(user: string): GameState {
   return {
     user,
@@ -257,10 +224,10 @@ function snapshotGameState(user: string): GameState {
 function restoreGameState(state: GameState): void {
   disableInput()
   isPaused = true;
-  if(state.isGameOver){
-    isPaused=false;
+  if (state.isGameOver) {
+    isPaused = false;
     gameOver()
-    
+
   }
   points = state.points;
   level = state.level;

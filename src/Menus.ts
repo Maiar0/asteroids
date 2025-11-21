@@ -101,10 +101,16 @@ export function drawLives(ctx: CanvasRenderingContext2D, lives: number) {
     ctx.restore();
 }
 
-export function drawStatsBar(ctx: CanvasRenderingContext2D, canvasWidth: number, points: number, level: number): void {
+export function drawStatsBar(
+    ctx: CanvasRenderingContext2D,
+    canvasWidth: number,
+    points: number,
+    level: number,
+    elapsedTime: number
+): void {
     const padding = 10;
     const barHeight = 32;
-    const barWidth = 220; // adjust as needed
+    const barWidth = 260; // widened to fit time display
 
     const barX = canvasWidth - barWidth - padding;
     const barY = padding;
@@ -128,16 +134,24 @@ export function drawStatsBar(ctx: CanvasRenderingContext2D, canvasWidth: number,
     const centerY = barY + barHeight / 2;
     const rightTextX = barX + barWidth - padding;
     const leftTextX = barX + padding;
+    const centerTextX = barX + barWidth / 2;
 
-    // Right side: points
-    const pointsText = `Points: ${points}`;
-    ctx.textAlign = "right";
-    ctx.fillText(pointsText, rightTextX, centerY);
+    // Format elapsed time as whole seconds (optional)
+    const secs = Math.floor(elapsedTime);
+    const timeText = `Time: ${secs}s`;
 
-    // Left side: level
-    const levelText = `Level: ${level}`;
+    // Level - left
     ctx.textAlign = "left";
-    ctx.fillText(levelText, leftTextX, centerY);
+    ctx.fillText(`Level: ${level}`, leftTextX, centerY);
+
+    // Points - center
+    ctx.textAlign = "center";
+    ctx.fillText(`Points: ${points}`, centerTextX, centerY);
+
+    // Time - right
+    ctx.textAlign = "right";
+    ctx.fillText(timeText, rightTextX, centerY);
 
     ctx.restore();
 }
+

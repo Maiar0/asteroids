@@ -30,9 +30,9 @@ export class Ship {
       this.image.src = "/player_ship.svg"
    }
 
-   update(dt: number, input: { thrust: boolean; brakes: boolean; }, mouseX: number, mouseY: number) {
+   update(dt: number, input: { thrust: boolean; reverse: boolean; }, mouseX: number, mouseY: number) {
       this.angle = angleAdjustment(this.x, this.y, mouseX, mouseY)
-      if (input.thrust || input.brakes) {
+      if (input.thrust || input.reverse) {
          const adj_vel: number = input.thrust ? this.velocity : -this.velocity;
          const ax = Math.cos(this.angle) * adj_vel;
          const ay = Math.sin(this.angle) * adj_vel;
