@@ -3,7 +3,7 @@ import { Asteroid } from "./Asteroid"
 import { Bullet } from "./Bullet";
 import { Explosion } from "./Explosion";
 import { drawGameOverMenu, drawLives, drawPauseMenu, drawStatsBar } from "./Menus"
-import { getMaxAsteroids, isColliding } from "./Utils";
+import { cleanUp, getMaxAsteroids, isColliding } from "./Utils";
 import type { GameState } from "./GameState";
 import { input, enableInput, disableInput } from "./Input";
 
@@ -86,24 +86,15 @@ function update(dt: number) {
       a.collided(frameCounter);
     }
   })
-  //remove asteroids
+  //remove asteroids w/explosion
   for (let i = asteroids.length - 1; i >= 0; i--) {
     if (!asteroids[i].alive) {//make them blow up
       explosions.push(new Explosion(asteroids[i].x, asteroids[i].y, frameCounter))
       asteroids.splice(i, 1);
     }
   }
-  //remove bullets
-  for (let i = bullets.length - 1; i >= 0; i--) {
-    if (!bullets[i].alive) {//disapear
-      bullets.splice(i, 1);
-    }
-  }
-  for (let i = explosions.length - 1; i >= 0; i--) {
-    if (!explosions[i].alive) {//disapear
-      explosions.splice(i, 1);
-    }
-  }
+  cleanUp(bullets)
+  cleanUp(explosions)
   //advance level
   level = 1 + Math.floor(points / 10);
 }

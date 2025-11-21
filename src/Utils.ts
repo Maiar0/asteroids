@@ -24,3 +24,11 @@ export function drawCircle(ctx: CanvasRenderingContext2D, x: number, y: number, 
     ctx.stroke();
     ctx.restore();
 }
+//for any dead objects that doesnt expect result of cleanup
+export function cleanUp<T extends { alive: boolean }>(o: T[]): void {
+     for (let i = o.length - 1; i >= 0; i--) {
+    if (!o[i].alive) {//disapear
+      o.splice(i, 1);
+    }
+  }
+}
