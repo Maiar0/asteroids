@@ -2,7 +2,8 @@ import { Ship } from "./Ship"
 import { Asteroid } from "./Asteroid"
 import { Bullet } from "./Bullet";
 import { Explosion } from "./Explosion";
-import { drawGameOverMenu, drawLives, drawPauseMenu } from "./Menus"
+import { drawGameOverMenu, drawLives, drawPauseMenu, drawStatsBar } from "./Menus"
+import { getMaxAsteroids } from "./Utils";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -25,6 +26,8 @@ const explosions: Explosion[] = [];
 let shootCD: number = 0;
 let isPaused: boolean = false;
 let isGameOver: boolean = false;
+let points: number = 0;
+let level = 1;
 
 document.addEventListener("visibilitychange", () => {
   if(document.hidden){
@@ -50,7 +53,8 @@ function update(dt: number) {
   shootCD -= dt;
   lifeOfShip += dt;
   ship.update(dt, input, mouseX, mouseY);
-  if (asteroids.length < 10) {
+  if (asteroids.length < getMaxAsteroids(points, level)) {
+    console.log("Spawning asteroid", getMaxAsteroids(points, level))
     const ca = new Asteroid();
     asteroids.push(ca)
     console.log("New Asteroid: ", "X: ", ca.x, "Y: ", ca.y, ca.angle);
@@ -73,6 +77,7 @@ function update(dt: number) {
       if (dist < a.radius * a.radius) {
         b.collided();
         a.collided(frameCounter);
+        points += 1;
       }
     })
     const dx = ship.x - a.x;
@@ -101,6 +106,8 @@ function update(dt: number) {
       explosions.splice(i, 1);
     }
   }
+  //advance level
+  level = 1 + Math.floor(points / 10);
 }
 
 function draw() {
@@ -109,7 +116,7 @@ function draw() {
     return;
   }
   if (isGameOver) {
-    drawGameOverMenu(ctx, width, height);
+    drawGameOverMenu(ctx, width, height, elapsedTime, points, level);
     return;
   }
   //background
@@ -131,6 +138,7 @@ function draw() {
     })
   }
   drawLives(ctx, lives);
+  drawStatsBar(ctx, width, points, level);
 }
 
 let lives = 3;
@@ -166,7 +174,10 @@ function restartGame() {
   bullets.length = 0;
   explosions.length = 0;
   lives = 3;
+  level = 1;
+  points = 0;
   ship = new Ship(width / 2, height / 2);
+  isPaused = false;
   isGameOver = false;
   window.removeEventListener("keydown", (e: KeyboardEvent) => {
     if (e.code === "KeyR") {
@@ -230,10 +241,14 @@ function shoot() {
 
 let lastTime = 0;
 let frameCounter = 0;
+let elapsedTime = 0;
 function loop(timestamp: number) {
   const dt = (timestamp - lastTime) / 1000; // seconds
   lastTime = timestamp;
   frameCounter += 1;
+  if(!isGameOver && !isPaused){
+    elapsedTime += dt;
+  }
   update(dt);
   draw();
   requestAnimationFrame(loop);
