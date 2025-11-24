@@ -2,6 +2,7 @@ import { Ship } from "./Ship"
 import { Asteroid } from "./Asteroid"
 import { Bullet } from "./Bullet";
 import { Explosion } from "./Explosion";
+import { Powerup } from "./Powerup";
 import { drawGameOverMenu, drawLives, drawPauseMenu, drawStatsBar } from "./Menus"
 import { cleanUp, getMaxAsteroids, isColliding } from "./Utils";
 import type { GameState } from "./GameState";
@@ -25,6 +26,7 @@ let ship: Ship = new Ship(width / 2, height / 2);
 const asteroids: Asteroid[] = [];
 const bullets: Bullet[] = [];
 const explosions: Explosion[] = [];
+const powerups: Powerup[] = [];
 let shootCD: number = 0;
 let isPaused: boolean = false;
 let isGameOver: boolean = false;
@@ -47,7 +49,6 @@ canvas.addEventListener("mousemove", (e: MouseEvent) => {
   mouseY = e.clientY - rect.top;
 
 });
-
 function update(dt: number) {
   handleInput();
   if (isPaused) return;
@@ -56,12 +57,6 @@ function update(dt: number) {
   shootCD -= dt;
   lifeOfShip += dt;
   ship.update(dt, input, mouseX, mouseY);
-  if (asteroids.length < getMaxAsteroids(points, level)) {
-    console.log("Spawning asteroid", getMaxAsteroids(points, level))
-    const ca = new Asteroid();
-    asteroids.push(ca)
-    console.log("New Asteroid: ", "X: ", ca.x, "Y: ", ca.y, ca.angle);
-  }
   asteroids.forEach(e => {
     e.update(dt, frameCounter);
   });
@@ -71,21 +66,42 @@ function update(dt: number) {
   explosions.forEach(e => {
     e.update(frameCounter);
   })
-  //collision
+  powerups.forEach(e =>{
+    e.update(dt);
+  })
+  //spawn new asteroids if needed
+  if (asteroids.length < getMaxAsteroids(points, level)) {
+    const a = new Asteroid();
+    asteroids.push(a)
+  }
+  
+  //asteroids colliding with player
   asteroids.forEach(a => {
-    bullets.forEach(b => {
-      //bullets
-      if (isColliding(a, b)) {
-        b.collided();
-        a.collided(frameCounter);
-      }
-    })
-    //player
     if (isColliding(a, ship)) {
       playerCollision();
       a.collided(frameCounter);
     }
   })
+  //collision bullet => asteroid && bullet => powerups
+  bullets.forEach(b =>{
+    asteroids.forEach(a =>{
+      if(isColliding(b,a)){
+        b.collided();
+        a.collided(frameCounter);
+        points += 1;
+        if(points % 5 === 0){
+          powerups.push(new Powerup())
+        }
+      }
+    })
+    powerups.forEach(p =>{
+      if(isColliding(b,p)){
+        b.collided();
+        p.collided();
+      }
+    })
+  })
+
   //remove asteroids w/explosion
   for (let i = asteroids.length - 1; i >= 0; i--) {
     if (!asteroids[i].alive) {//make them blow up
@@ -95,6 +111,7 @@ function update(dt: number) {
   }
   cleanUp(bullets)
   cleanUp(explosions)
+  cleanUp(powerups)
   //advance level
   level = 1 + Math.floor(points / 10);
 }
@@ -126,6 +143,11 @@ function draw() {
       e.draw(ctx);
     })
   }
+  if(powerups.length > 0){
+    powerups.forEach(e =>{
+      e.draw(ctx);
+    })
+  }
   drawLives(ctx, lives);
   drawStatsBar(ctx, width, points, level, elapsedTime);
 }
@@ -133,7 +155,6 @@ function draw() {
 let lives = 3;
 let lifeOfShip = 0;
 function playerCollision() {
-  console.log("PLayerCollision: ", lifeOfShip, lives)
   if (lifeOfShip < 2) return;
   lives -= 1;
   if (lives <= 0) {

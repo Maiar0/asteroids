@@ -27,7 +27,6 @@ export class Asteroid {
       this.y = pos.y;
       const y2 = Math.random() * (600);
       const x2 = Math.random() * (800);
-      console.log("interior random point: ", x2, y2);
       this.angle = angleAdjustment(this.x, this.y, x2, y2);
       this.velocity = 100;
       this.dx = 0;
@@ -99,7 +98,6 @@ export class Asteroid {
          { x: (832 + Math.random() * (900 - 832)), y: (-100 + Math.random() * (600 + 100)) }
       ]
       const choice = spawnAreas[Math.floor(Math.random() * 4)];
-      console.log("initPos:", choice);
       return choice;
    }
    initradius(): number {
@@ -111,8 +109,6 @@ export class Asteroid {
    }
 
    collided(frame: number) {
-      console.log(frame, this.lastCollision, this.radius)
-      if (frame - this.lastCollision < 10) return;
       if (this.radius === 14) {
          this.alive = false;
       }
@@ -122,7 +118,6 @@ export class Asteroid {
       if (this.radius === 37) {
          this.radius = 22;
       }
-      console.log(this.radius)
       this.lastCollision = frame;
    }
 }

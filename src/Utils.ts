@@ -19,16 +19,16 @@ export function drawCircle(ctx: CanvasRenderingContext2D, x: number, y: number, 
     ctx.save();
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.strokeStyle = "red"; // choose any color (red for debugging)
+    ctx.strokeStyle = "red"; 
     ctx.lineWidth = 1.5;
     ctx.stroke();
     ctx.restore();
 }
-//for any dead objects that doesnt expect result of cleanup
+//cleans up array of held objects that are !alive, no result of cleanup
 export function cleanUp<T extends { alive: boolean }>(o: T[]): void {
-     for (let i = o.length - 1; i >= 0; i--) {
-    if (!o[i].alive) {//disapear
-      o.splice(i, 1);
+    for (let i = o.length - 1; i >= 0; i--) {
+        if (!o[i].alive) {//disapear
+            o.splice(i, 1);
+        }
     }
-  }
 }

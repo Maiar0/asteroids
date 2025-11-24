@@ -1,0 +1,81 @@
+<svg
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Red alien saucer -->
+  <g fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Glow under saucer -->
+    <ellipse
+      cx="32"
+      cy="44"
+      rx="18"
+      ry="4"
+      fill="#ff4d4d"
+      fill-opacity="0.25"
+      stroke="none"
+    />
+
+    <!-- Main saucer body -->
+    <ellipse
+      cx="32"
+      cy="32"
+      rx="22"
+      ry="10"
+      fill="#330000"
+      fill-opacity="0.9"
+      stroke="#ff4d4d"
+      stroke-width="2"
+    />
+
+    <!-- Top dome -->
+    <path
+      d="M 22 30
+         Q 32 18 42 30
+         Z"
+      fill="#660000"
+      stroke="#ff8080"
+      stroke-width="1.5"
+    />
+
+    <!-- Cockpit highlight -->
+    <path
+      d="M 27 29
+         Q 32 22 37 29
+         Z"
+      fill="#ff9999"
+      fill-opacity="0.4"
+      stroke="none"
+    />
+
+    <!-- Rim lights -->
+    <circle cx="20" cy="33" r="1.6" fill="#ffaaaa" />
+    <circle cx="24" cy="35" r="1.6" fill="#ff7777" />
+    <circle cx="28" cy="36" r="1.6" fill="#ffaaaa" />
+    <circle cx="32" cy="36.5" r="1.6" fill="#ff7777" />
+    <circle cx="36" cy="36" r="1.6" fill="#ffaaaa" />
+    <circle cx="40" cy="35" r="1.6" fill="#ff7777" />
+    <circle cx="44" cy="33" r="1.6" fill="#ffaaaa" />
+
+    <!-- Small fins -->
+    <path
+      d="M 12 32
+         Q 16 36 20 36
+         Q 16 34 12 32
+         Z"
+      fill="#330000"
+      stroke="#ff4d4d"
+      stroke-width="1"
+    />
+    <path
+      d="M 52 32
+         Q 48 36 44 36
+         Q 48 34 52 32
+         Z"
+      fill="#330000"
+      stroke="#ff4d4d"
+      stroke-width="1"
+    />
+  </g>
+</svg>
