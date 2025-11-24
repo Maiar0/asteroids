@@ -210,7 +210,7 @@ function handleInput() {
   if (input.shoot) {
     input.shoot = false;
     if (shootCD > 0) return;
-    bullets.push(new Bullet(ship.x, ship.y, ship.angle))
+    bullets.push(new Bullet(ship.x, ship.y, ship.angle, 3))
     shootCD = 0.25;
   }
 }
