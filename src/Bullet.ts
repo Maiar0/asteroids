@@ -21,7 +21,7 @@ export class Bullet {
         this.angle = angle;
         this.dx = Math.cos(this.angle) * 300;
         this.dy = Math.sin(this.angle) * 300;
-        this.radius = (power * 3);
+        this.radius = power > 1 ? 9 : 3;
         this.power = power;
 
         this.image = new Image();
@@ -49,10 +49,6 @@ export class Bullet {
                 this.drawLine(ctx, this.x, this.y, this.dx, this.dy, 2)
                 break;
             case 2:
-                this.drawLine(ctx, right.x, right.y, this.dx, this.dy, 2)
-                this.drawLine(ctx, this.x, this.y, this.dx, this.dy, 2)
-                break;
-            case 3:
                 this.drawLine(ctx, left.x, left.y, this.dx, this.dy, 2)
                 this.drawLine(ctx, this.x, this.y, this.dx, this.dy, 2)
                 this.drawLine(ctx, right.x, right.y, this.dx, this.dy, 2)
@@ -62,7 +58,6 @@ export class Bullet {
                 break;
 
         }
-        this.drawLine(ctx, right.x, right.y, this.dx, this.dy, 2)
 
         drawCircle(ctx, this.x, this.y, this.radius)//debug collision
         ctx.restore();

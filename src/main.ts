@@ -32,7 +32,8 @@ let isPaused: boolean = false;
 let isGameOver: boolean = false;
 let points: number = 0;
 let level = 1;
-
+let bulletPower = 1;
+let bulletPowerUpTimer = 0;
 document.addEventListener("visibilitychange", () => {
   if (document.hidden && !isGameOver) {
     isPaused = true;
@@ -49,13 +50,17 @@ canvas.addEventListener("mousemove", (e: MouseEvent) => {
   mouseY = e.clientY - rect.top;
 
 });
-function update(dt: number) {
+function update(dt: number, elapsedTime: number) {
   handleInput();
   if (isPaused) return;
   if (isGameOver) return;
+  
   //update frame
   shootCD -= dt;
   lifeOfShip += dt;
+  if(elapsedTime - bulletPowerUpTimer > 10){
+    bulletPower = 1;
+  }
   ship.update(dt, input, mouseX, mouseY);
   asteroids.forEach(e => {
     e.update(dt, frameCounter);
@@ -98,6 +103,8 @@ function update(dt: number) {
       if(isColliding(b,p)){
         b.collided();
         p.collided();
+        bulletPower = p.imageType === 1 ? 2: bulletPower = bulletPower;
+        bulletPowerUpTimer = elapsedTime;
       }
     })
   })
@@ -210,7 +217,8 @@ function handleInput() {
   if (input.shoot) {
     input.shoot = false;
     if (shootCD > 0) return;
-    bullets.push(new Bullet(ship.x, ship.y, ship.angle, 3))
+    console.log("Shoot:", bulletPower)
+    bullets.push(new Bullet(ship.x, ship.y, ship.angle, bulletPower))
     shootCD = 0.25;
   }
 }
@@ -274,7 +282,7 @@ function loop(timestamp: number) {
   if (!isGameOver && !isPaused) {
     elapsedTime += dt;
   }
-  update(dt);
+  update(dt, elapsedTime);
   draw();
   requestAnimationFrame(loop);
 }
