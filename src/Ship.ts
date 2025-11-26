@@ -5,9 +5,9 @@ export class Ship {
    angle: number; //radians
    dx: number;
    dy: number;
+   velocity: number;
 
    readonly radius: number;
-   readonly velocity: number;
    readonly friction: number;
    readonly maxSpeed: number;
    readonly ROTATION_OFFSET: number;

@@ -7,6 +7,7 @@ import { drawGameOverMenu, drawLives, drawPauseMenu, drawStatsBar } from "./Menu
 import { cleanUp, getMaxAsteroids, isColliding } from "./Utils";
 import type { GameState } from "./GameState";
 import { input, enableInput, disableInput } from "./Input";
+import { PowerupManager } from "./PowerupManager";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -33,7 +34,8 @@ let isGameOver: boolean = false;
 let points: number = 0;
 let level = 1;
 let bulletPower = 1;
-let bulletPowerUpTimer = 0;
+const puManager: PowerupManager = new PowerupManager(bulletPower, ship.velocity);
+
 document.addEventListener("visibilitychange", () => {
   if (document.hidden && !isGameOver) {
     isPaused = true;
@@ -56,11 +58,9 @@ function update(dt: number, elapsedTime: number) {
   if (isGameOver) return;
   
   //update frame
+  puManager.update(dt);
   shootCD -= dt;
   lifeOfShip += dt;
-  if(elapsedTime - bulletPowerUpTimer > 10){
-    bulletPower = 1;
-  }
   ship.update(dt, input, mouseX, mouseY);
   asteroids.forEach(e => {
     e.update(dt, frameCounter);
@@ -103,11 +103,32 @@ function update(dt: number, elapsedTime: number) {
       if(isColliding(b,p)){
         b.collided();
         p.collided();
-        bulletPower = p.imageType === 1 ? 2: bulletPower = bulletPower;
-        bulletPowerUpTimer = elapsedTime;
+        console.log("ImageType:",p.imageType)
+        switch(p.imageType){
+          case 1:
+            puManager.shotRedAlien();
+            console.log("Shot Red Alien")
+            break;
+          case 2:
+            puManager.shotYellowAlien();
+            console.log("Shot Yellow Alien")
+            break;
+          case 3:
+            puManager.shotGreenAlien();
+            console.log("Shot Green Alien")
+            break;
+          default:
+            break;
+        }
       }
     })
   })
+  const pups = puManager.applyPowerups();
+  if(bulletPower !== pups.bulletType){
+    console.log("Changing bullet Type")
+  }
+  ship.velocity = pups.shipSpeed;
+  bulletPower = pups.bulletType;
 
   //remove asteroids w/explosion
   for (let i = asteroids.length - 1; i >= 0; i--) {
