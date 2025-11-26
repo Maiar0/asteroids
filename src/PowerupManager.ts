@@ -16,6 +16,7 @@ export class PowerupManager {
     shootCD: number;
 
     lives: number;
+    barrage: number;
 
     constructor(bullet: number, shipSpeed: number, baseShootCD: number) {
         this.baseBulletType = bullet;
@@ -34,6 +35,7 @@ export class PowerupManager {
         this.shipTimer = 0;
 
         this.lives = 0;
+        this.barrage = 0;
     }
 
     update(dt: number) {
@@ -62,15 +64,19 @@ export class PowerupManager {
         shipSpeed: number,
         bulletType: number,
         addLives: number,
-        shootCD: number
+        shootCD: number,
+        barrage: number
     } {
         let addLives = this.lives;
         this.lives = 0;
+        let addBarrage = this.barrage;
+        this.barrage = 0;
         return {
             shipSpeed: this.shipSpeed,
             bulletType: this.bulletType,
             addLives: addLives,
-            shootCD: this.shootCD
+            shootCD: this.shootCD,
+            barrage: addBarrage
         };
     }
     shotRedAlien(){
@@ -86,6 +92,7 @@ export class PowerupManager {
     }
     shotYellowAlien(){
         //add amunition
+        this.barrage += 1;
     }
     shotGreenAlien(){
         //adds one life

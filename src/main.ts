@@ -8,6 +8,7 @@ import { cleanUp, getMaxAsteroids, isColliding } from "./Utils";
 import type { GameState } from "./GameState";
 import { input, enableInput, disableInput } from "./Input";
 import { PowerupManager } from "./PowerupManager";
+import { Missile } from "./Missile";
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -28,14 +29,21 @@ const asteroids: Asteroid[] = [];
 const bullets: Bullet[] = [];
 const explosions: Explosion[] = [];
 const powerups: Powerup[] = [];
+const missiles: Missile[] = [];
+
 let shootCD: number = 0;
 let baseShootCD: number = 0.25;
+let bulletPower = 1;
+
+let barrageCount: number = 100;
+let barrageCD: number = 0;
+
+const puManager: PowerupManager = new PowerupManager(bulletPower, ship.velocity, baseShootCD);
+
 let isPaused: boolean = false;
 let isGameOver: boolean = false;
 let points: number = 0;
 let level = 1;
-let bulletPower = 1;
-const puManager: PowerupManager = new PowerupManager(bulletPower, ship.velocity, baseShootCD);
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden && !isGameOver) {
@@ -61,6 +69,7 @@ function update(dt: number, elapsedTime: number) {
   //update frame
   puManager.update(dt);
   shootCD -= dt;
+  barrageCD -= dt;
   lifeOfShip += dt;
   ship.update(dt, input, mouseX, mouseY);
   asteroids.forEach(e => {
@@ -73,6 +82,9 @@ function update(dt: number, elapsedTime: number) {
     e.update(frameCounter);
   })
   powerups.forEach(e =>{
+    e.update(dt);
+  })
+  missiles.forEach(e =>{
     e.update(dt);
   })
   //spawn new asteroids if needed
@@ -129,6 +141,7 @@ function update(dt: number, elapsedTime: number) {
   bulletPower = pups.bulletType;
   lives += pups.addLives;
   baseShootCD = pups.shootCD;
+  barrageCount += pups.barrage;
 
   //remove asteroids w/explosion
   for (let i = asteroids.length - 1; i >= 0; i--) {
@@ -140,6 +153,7 @@ function update(dt: number, elapsedTime: number) {
   cleanUp(bullets)
   cleanUp(explosions)
   cleanUp(powerups)
+  cleanUp(missiles)
   //advance level
   level = 1 + Math.floor(points / 10);
 }
@@ -173,6 +187,11 @@ function draw() {
   }
   if(powerups.length > 0){
     powerups.forEach(e =>{
+      e.draw(ctx);
+    })
+  }
+  if(missiles.length > 0){
+    missiles.forEach(e =>{
       e.draw(ctx);
     })
   }
@@ -238,9 +257,17 @@ function handleInput() {
   if (input.shoot) {
     input.shoot = false;
     if (shootCD > 0) return;
-    console.log("Shoot:", bulletPower)
     bullets.push(new Bullet(ship.x, ship.y, ship.angle, bulletPower))
     shootCD = baseShootCD;
+  }
+  if(input.barrage){
+    input.barrage = false;
+    if(barrageCD > 0) return;
+    if(barrageCount <= 0) return;
+    console.log("Barrage After: ", barrageCount)
+    missiles.push(new Missile(ship.x,ship.y, ship.angle, bulletPower))//we should get these in the bullets list
+    barrageCount -= 1;
+    barrageCD = 0.25;
   }
 }
 function snapshotGameState(user: string): GameState {

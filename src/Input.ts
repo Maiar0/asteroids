@@ -4,6 +4,7 @@ export const input = {
     reverse: false,
     shoot: false,
     escape: false,
+    barrage: false
 };
 
 function onKeyDown(e: KeyboardEvent): void {
@@ -20,6 +21,7 @@ function onKeyUp(e: KeyboardEvent): void {
         case "KeyW": input.thrust = false; break;
         case "KeyS": input.reverse = false; break;
         case "Space": input.shoot = true; break;
+        case "KeyQ": input.barrage = true; break;
         default: break;
     }
 }
@@ -38,4 +40,5 @@ export function disableInput(): void {
     input.reverse = false;
     input.shoot = false;
     input.escape = false;
+    input.barrage= false;
 }
