@@ -1,7 +1,7 @@
 export class PowerupManager {
-    elapsedTime: number;
 
     baseBulletType: number;
+    baseShootCD: number;
     baseShipSpeed: number;
 
     bulletActive: boolean;
@@ -13,11 +13,16 @@ export class PowerupManager {
     shipMultiplier: number;
     shipTimer: number;
 
+    shootCD: number;
 
-    constructor(bullet: number, shipSpeed: number) {
-        this.elapsedTime = 0;
+    lives: number;
+
+    constructor(bullet: number, shipSpeed: number, baseShootCD: number) {
         this.baseBulletType = bullet;
         this.baseShipSpeed = shipSpeed
+        this.baseShootCD = baseShootCD;
+
+        this.shootCD = baseShootCD;
 
         this.bulletActive = false;
         this.bulletTimer = 0;
@@ -27,10 +32,11 @@ export class PowerupManager {
         this.shipMultiplier = 1.5;
         this.shipSpeed = shipSpeed;
         this.shipTimer = 0;
+
+        this.lives = 0;
     }
 
     update(dt: number) {
-        this.elapsedTime += dt;
         this.bulletTimer -= dt;
         this.shipTimer -= dt;
 
@@ -54,17 +60,23 @@ export class PowerupManager {
 
     applyPowerups(): {
         shipSpeed: number,
-        bulletType: number
+        bulletType: number,
+        addLives: number,
+        shootCD: number
     } {
-        
+        let addLives = this.lives;
+        this.lives = 0;
         return {
             shipSpeed: this.shipSpeed,
-            bulletType: this.bulletType
+            bulletType: this.bulletType,
+            addLives: addLives,
+            shootCD: this.shootCD
         };
     }
     shotRedAlien(){
         if(this.bulletActive){
             this.bulletTimer += 5;
+            this.shootCD = this.baseShootCD * 0.5;
             return;
         }
         this.bulletActive = true;
@@ -73,15 +85,10 @@ export class PowerupManager {
         console.log("Shot Red Alien", this.bulletActive, this.bulletTimer, this.bulletType)
     }
     shotYellowAlien(){
-        if(this.shipActive){
-            this.shipTimer += 10;
-            return
-        }
-        this.shipActive = true;
-        this.shipMultiplier = 1.2;
-        this.shipTimer = 10;
+        //add amunition
     }
     shotGreenAlien(){
-        //Duno what power this will give.
+        //adds one life
+        this.lives +=1;
     }
 }

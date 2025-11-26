@@ -29,12 +29,13 @@ const bullets: Bullet[] = [];
 const explosions: Explosion[] = [];
 const powerups: Powerup[] = [];
 let shootCD: number = 0;
+let baseShootCD: number = 0.25;
 let isPaused: boolean = false;
 let isGameOver: boolean = false;
 let points: number = 0;
 let level = 1;
 let bulletPower = 1;
-const puManager: PowerupManager = new PowerupManager(bulletPower, ship.velocity);
+const puManager: PowerupManager = new PowerupManager(bulletPower, ship.velocity, baseShootCD);
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden && !isGameOver) {
@@ -124,11 +125,10 @@ function update(dt: number, elapsedTime: number) {
     })
   })
   const pups = puManager.applyPowerups();
-  if(bulletPower !== pups.bulletType){
-    console.log("Changing bullet Type")
-  }
   ship.velocity = pups.shipSpeed;
   bulletPower = pups.bulletType;
+  lives += pups.addLives;
+  baseShootCD = pups.shootCD;
 
   //remove asteroids w/explosion
   for (let i = asteroids.length - 1; i >= 0; i--) {
@@ -183,7 +183,7 @@ function draw() {
 let lives = 3;
 let lifeOfShip = 0;
 function playerCollision() {
-  if (lifeOfShip < 2) return;
+  if (lifeOfShip < 1.5) return;
   lives -= 1;
   if (lives <= 0) {
     gameOver();
@@ -240,7 +240,7 @@ function handleInput() {
     if (shootCD > 0) return;
     console.log("Shoot:", bulletPower)
     bullets.push(new Bullet(ship.x, ship.y, ship.angle, bulletPower))
-    shootCD = 0.25;
+    shootCD = baseShootCD;
   }
 }
 function snapshotGameState(user: string): GameState {
